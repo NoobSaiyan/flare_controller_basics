@@ -32,14 +32,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 //defining list of color
-List<Color> exampleColors = <Color>[Colors.red, Colors.blue, Colors.green];
+List<Color> exampleColors = <Color>[
+  Colors.pink,
+  Colors.blue,
+  Colors.green,
+  Colors.white10,
+  Colors.black
+];
+FlutterColorFill _fill;
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with FlareController {
+  void initialize(FlutterActorArtboard artboard) {
+    FlutterActorShape shape = artboard.getNode("outer");
+    _fill = shape?.fill as FlutterColorFill;
+  }
+
+  void setViewTransform(Mat2D viewTransform) {}
+
+  bool advance(FlutterActorArtboard artboard, double elapsed) {
+    Color nextColor = exampleColors[_counter % exampleColors.length];
+    if (_fill != null) {
+      _fill.uiColor = nextColor;
+    }
+    return false;
+  }
+
   int _counter = 0;
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+      isActive.value = true;
     });
   }
 
@@ -49,19 +72,11 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: FlareActor(
+        'assets/controller_test.flr',
+        alignment: Alignment.center,
+        fit: BoxFit.contain,
+        controller: this,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
