@@ -2,6 +2,7 @@ import 'package:flare_flutter/flare_controller.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_dart/math/mat2d.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -36,7 +37,7 @@ List<Color> exampleColors = <Color>[
   Colors.pink,
   Colors.blue,
   Colors.green,
-  Colors.white10,
+  Colors.grey[800],
   Colors.black
 ];
 FlutterColorFill _fill;
@@ -48,7 +49,6 @@ class _MyHomePageState extends State<MyHomePage> with FlareController {
   }
 
   void setViewTransform(Mat2D viewTransform) {}
-
   bool advance(FlutterActorArtboard artboard, double elapsed) {
     Color nextColor = exampleColors[_counter % exampleColors.length];
     if (_fill != null) {
@@ -57,9 +57,12 @@ class _MyHomePageState extends State<MyHomePage> with FlareController {
     return false;
   }
 
+  final FlareControls _flareControls = FlareControls();
+  String animation = 'boing';
   int _counter = 0;
 
   void _incrementCounter() {
+    _flareControls.play(animation);
     setState(() {
       _counter++;
       isActive.value = true;
@@ -76,7 +79,13 @@ class _MyHomePageState extends State<MyHomePage> with FlareController {
         'assets/controller_test.flr',
         alignment: Alignment.center,
         fit: BoxFit.contain,
-        controller: this,
+        // callback: (name) {
+        //   setState(() {
+        //     animation = '';
+        //   });
+        // },
+        // animation: animation,
+        controller: _flareControls,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
